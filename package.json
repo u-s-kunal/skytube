@@ -1,0 +1,35 @@
+{
+  "name": "skytube",
+  "version": "1.0.0",
+  "description": "The fill stack video streaming application designed using Mern stack.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/u-s-kunal/skytube.git"
+  },
+  "keywords": [
+    "skytube",
+    "videos",
+    "mern",
+    "fullstack"
+  ],
+  "author": "Kunal sudhakar ughade",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/u-s-kunal/skytube/issues"
+  },
+  "homepage": "https://github.com/u-s-kunal/skytube#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.9.1"
+  }
+}
