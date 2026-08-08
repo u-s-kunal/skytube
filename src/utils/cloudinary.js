@@ -5,7 +5,7 @@ import fs from "fs";
 cloudinary.config({
   cloud_name: "voyikrru",
   api_key: "414627594723672",
-  api_secret: process.env.API_SECRET,
+  api_secret: "GWHeJKQjhzkcbyJdfkQKpPRcx0I",
 });
 
 const uploadOnCloudinary = async (localFilePath) => {
@@ -14,7 +14,8 @@ const uploadOnCloudinary = async (localFilePath) => {
     const response = await cloudinary.uploader.upload(localFilePath, {
       resource_type: "auto",
     });
-    console.log("cloudinary  workig perfectly...🥳", response.url);
+    // console.log("cloudinary  workig perfectly...🥳", response.url);
+    fs.unlinkSync(localFilePath);
     return response;
   } catch (error) {
     fs.unlinkSync(localFilePath); //removes locally saved file as operation failed...
