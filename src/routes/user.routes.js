@@ -5,8 +5,13 @@ import {
   loginUser,
   logOutUser,
   refreshAccessToken,
+  changeCurrentPassword,
+  getCurrentUser,
+  updateAccountDetails,
   updateAvatar,
   updateCoverImage,
+  getUserChannelProfile,
+  getWatchHistory,
 } from "../controllers/user.controller.js";
 
 import { verifyJWT } from "../middleware/auth.middleware.js";
@@ -30,7 +35,16 @@ router.route("/register").post(
 router.route("/login").post(loginUser);
 router.route("/logout").post(verifyJWT, logOutUser);
 router.route("/refresh-token").post(refreshAccessToken);
-router.route("/update-avatar").post(updateAvatar);
-router.route("/update-cover-image").post(updateCoverImage);
+router.route("/chnage-password").post(verifyJWT, changeCurrentPassword);
+router.route("/current-user").post(verifyJWT, getCurrentUser);
+router.route("/update-account-details").patch(verifyJWT, updateAccountDetails);
+router.route("/c/:username").get(verifyJWT, getUserChannelProfile);
+router.route("/watch-history").get(verifyJWT, getWatchHistory);
+router
+  .route("/update-avatar")
+  .patch(verifyJWT, upload.single("avatar"), updateAvatar);
+router
+  .route("/update-cover-image")
+  .patch(verifyJWT, upload.single("coverImage"), updateCoverImage);
 
 export default router;
