@@ -64,3 +64,52 @@
   background: black;
   border-radius: 10px;
 }
+
+/* NAVBAR CSS */
+
+.navbar {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  border-bottom: 1px solid #ddd;
+}
+
+.navbar__logo {
+  font-size: 24px;
+  font-weight: 700;
+  text-decoration: none;
+  color: #343333;
+}
+
+.navbar__search {
+  display: flex;
+  width: 40%;
+}
+
+.navbar__search input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px 0 0 6px;
+  outline: none;
+}
+
+.navbar__search button {
+  padding: 10px 16px;
+  border: 1px solid #ccc;
+  border-left: none;
+  border-radius: 0 6px 6px 0;
+  cursor: pointer;
+}
+
+.navbar__actions {
+  display: flex;
+  gap: 16px;
+}
+
+.navbar__actions a {
+  text-decoration: none;
+  color: #000;
+}

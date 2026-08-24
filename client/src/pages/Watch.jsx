@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { getVideoById } from "../api/video.api.js";
 
 function Watch() {
   const { videoId } = useParams();
@@ -11,19 +12,11 @@ function Watch() {
   useEffect(() => {
     const fetchVideo = async () => {
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/videos/${videoId}`,
-        );
+        const response = await getVideoById(videoId);
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch video");
-        }
+        console.log("Video response:", response);
 
-        const result = await response.json();
-
-        console.log("Video response:", result);
-
-        setVideo(result.data);
+        setVideo(response.data);
       } catch (error) {
         console.error(error);
         setError("Failed to load video");

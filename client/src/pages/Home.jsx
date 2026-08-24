@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getVideos } from "../api/api.js";
+import { getVideos } from "../api/video.api.js";
 import VideoGrid from "../components/VideoGrid.jsx";
 
 function Home() {
@@ -36,7 +36,6 @@ function Home() {
 
   return (
     <main>
-      <h1>SkyTube</h1>
 
       {videos.length === 0 ? (
         <p>No videos found.</p>
