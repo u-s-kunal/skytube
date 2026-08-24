@@ -2,7 +2,7 @@ import VideoCard from "./VideoCard.jsx";
 
 function VideoGrid({ videos }) {
   return (
-    <div className="video-grid">
+    <div className="grid grid-cols-1 gap-x-5 gap-y-8 p-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {videos.map((video) => (
         <VideoCard
           key={video._id}

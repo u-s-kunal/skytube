@@ -102,15 +102,16 @@ const loginUser = asyncHandler(async (req, res) => {
 
   //find the user
   const user = await User.findOne({
-    $or: [{ username: userName }, { email }],
+    $or: [{ userName }, { email }],
   });
+
   if (!user) {
-    throw new ApiError(404, "User Does not exist..!!!🤓");
+    throw new ApiError(404, "User does not exist");
   }
 
   //password check
 
-  const isPasswordValid = user.isPasswordCorrect(password);
+  const isPasswordValid = await user.isPasswordCorrect(password);
   if (!isPasswordValid) {
     throw new ApiError(401, "Password is incorrect..!!!🤨");
   }
@@ -249,7 +250,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
 
   const user = await User.findById(req.user?._id);
-  const isPasswordCorrect = user.isPasswordCorrect(oldPassword);
+  const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
 
   if (!isPasswordCorrect) {
     throw new ApiError(400, "Invalid old password...🙃");
