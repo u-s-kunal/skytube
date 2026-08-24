@@ -1,19 +1,23 @@
-function VideoCard({ video }) {
-  return (
-    <article className="video-card">
-      <div className="video-card__thumbnail">
-        <video
-          controls
-          muted
-          poster={video.thumbnail}
-        >
-          <source
-            src={video.videoFile}
-            type="video/mp4"
-          />
+import { useNavigate } from "react-router-dom";
 
-          Your browser does not support the video tag.
-        </video>
+function VideoCard({ video }) {
+
+    const navigate = useNavigate();
+    const handleClick = () => {
+    navigate(`/watch/${video._id}`);
+     };
+    
+    
+  return (
+     <article
+      className="video-card"
+      onClick={handleClick}
+    >
+      <div className="video-card__thumbnail">
+        <img
+          src={video.thumbnail}
+          alt={video.title}
+        />
       </div>
 
       <div className="video-card__info">
