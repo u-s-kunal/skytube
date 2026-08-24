@@ -3,13 +3,20 @@ import mongoose, { Schema } from "mongoose";
 const subscriptionSchema = new Schema(
   {
     subscriber: {
-      type: Schema.Types.ObjectId, //One who is Subscribing
+      type: Schema.Types.ObjectId,
       ref: "User",
     },
+
     channel: {
-      type: Schema.Types.ObjectId, //One to who subscriber Subscribing
+      type: Schema.Types.ObjectId,
       ref: "User",
     },
   },
   { timestamps: true },
 );
+
+subscriptionSchema.index({ subscriber: 1, channel: 1 }, { unique: true });
+
+const Subscription = mongoose.model("Subscription", subscriptionSchema);
+
+export default Subscription;

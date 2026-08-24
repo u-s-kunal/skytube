@@ -22,4 +22,7 @@ const likeSchema = new Schema(
   { timestamps: true },
 );
 
+// Prevent the same user from liking the same video more than once
+likeSchema.index({ video: 1, likedBy: 1 }, { unique: true });
+
 export const Like = mongoose.model("Like", likeSchema);

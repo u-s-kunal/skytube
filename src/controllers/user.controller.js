@@ -350,6 +350,7 @@ const updateCoverImage = asyncHandler(async (req, res) => {
 /////////USER CHNANEL PROFLE  LOGIC FROM HERE ///////
 const getUserChannelProfile = asyncHandler(async (req, res) => {
   const { username } = req.params;
+
   if (!username?.trim()) {
     throw new ApiError(400, "username is missing...");
   }
@@ -357,9 +358,10 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
   const channel = await User.aggregate([
     {
       $match: {
-        username: username?.toLowerCase(),
+        userName: username.toLowerCase(),
       },
     },
+
     {
       $lookup: {
         from: "subcriptions",
@@ -368,6 +370,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
         as: "subscribers",
       },
     },
+
     {
       $lookup: {
         from: "subcriptions",
@@ -376,27 +379,33 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
         as: "subscribedTo",
       },
     },
+
     {
       $addFields: {
         subscribersCount: {
           $size: "$subscribers",
         },
+
         channelsSubscribedToCount: {
           $size: "$subscribedTo",
         },
+
         isSubscribed: {
           $cond: {
-            if: { $in: [req.user?._id, "$subscribers.subscriber"] },
+            if: {
+              $in: [req.user?._id, "$subscribers.subscriber"],
+            },
             then: true,
             else: false,
           },
         },
       },
     },
+
     {
       $project: {
         fullName: 1,
-        username: 1,
+        userName: 1,
         subscribersCount: 1,
         channelsSubscribedToCount: 1,
         isSubscribed: 1,
@@ -408,12 +417,12 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
   ]);
 
   if (!channel?.length) {
-    throw new ApiError(404, "Channel not found..😞");
+    throw new ApiError(404, "Channel not found..");
   }
 
   return res
     .status(200)
-    .json(new ApiResponse(200, channel[0], "channel fetch Sccessfull...🥳"));
+    .json(new ApiResponse(200, channel[0], "Channel fetched successfully"));
 });
 
 /////////GETTING WATCH HISTORY LOGIC FROM HERE ///////
