@@ -3,7 +3,13 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.js";
 
 function Navbar() {
-   const { user, isAuthenticated } = useAuth();
+  const {
+  user,
+  isAuthenticated,
+  logout,
+  } = useAuth();
+  
+  
   return (
     <nav className="navbar">
       <Link to="/" className="navbar__logo ">
@@ -23,6 +29,7 @@ function Navbar() {
 
       <div className="flex items-center gap-3">
   {isAuthenticated ? (
+  <div className="flex items-center gap-3">
     <Link
       to={`/channel/${user.userName}`}
       className="flex items-center gap-2"
@@ -33,21 +40,32 @@ function Navbar() {
         className="h-9 w-9 rounded-full object-cover"
       />
 
-      <p className="font-medium">
+      <span className="font-medium">
         {user.userName}
-      </p>
+      </span>
     </Link>
-  ) : (
-    <>
-      <Link to="/login">
-        Login
-      </Link>
 
-      <Link to="/register">
-        Register
-      </Link>
-    </>
-  )}
+    <button
+      onClick={logout}
+      className="rounded-lg border px-4 py-2 text-sm hover:bg-gray-100"
+    >
+      Logout
+    </button>
+  </div>
+) : (
+  <>
+    <Link to="/login">
+      Login
+    </Link>
+
+    <Link
+      to="/register"
+      className="rounded-lg bg-black px-4 py-2 text-white"
+    >
+      Register
+    </Link>
+  </>
+)}
 </div>
     </nav>
   );

@@ -73,3 +73,20 @@ export const getCurrentUser = async (accessToken) => {
 
   return data;
 };
+
+//Refresh Access Token
+
+export const refreshAccessToken = async () => {
+  const response = await fetch(`${API_URL}/users/refresh-token`, {
+    method: "POST",
+    credentials: "include",
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to refresh access token");
+  }
+
+  return data;
+};

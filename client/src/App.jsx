@@ -6,6 +6,8 @@ import MainLayout from "./layouts/MainLayout.jsx";
 import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
 import Channel from "./pages/Channel.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import LikedVideos from "./pages/LikedVideos.jsx";
 
 function App() {
   return (
@@ -26,10 +28,21 @@ function App() {
             path="/login"
             element={<Login />}
           />
-          <Route
-            path="/channel/:username"
-            element={<Channel />}
-    />
+
+          {/* Protected routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route
+              path="/channel/:username"
+              element={<Channel />}
+            />
+            <Route
+              path="/liked-videos"
+              element={<LikedVideos />}
+            />
+
+            {/* More protected pages will go here */}
+          </Route>
+          
         </Route>
       </Routes>
     </BrowserRouter>

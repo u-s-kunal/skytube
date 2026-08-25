@@ -5,6 +5,7 @@ import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
+import { Like } from "../models/like.model.js";
 
 const getAllVideos = asyncHandler(async (req, res) => {
   // 1. Get query parameters
@@ -182,29 +183,35 @@ const publishAVideo = asyncHandler(async (req, res) => {
 });
 
 const getVideoById = asyncHandler(async (req, res) => {
-  // 1. Get video ID from URL
   const { videoId } = req.params;
 
-  // 2. Validate video ID
   if (!mongoose.isValidObjectId(videoId)) {
     throw new ApiError(400, "Invalid video ID");
   }
 
-  // 3. Find video
   const video = await Video.findById(videoId).populate(
     "owner",
     "userName fullName avatar",
   );
 
-  // 4. Check if video exists
   if (!video) {
     throw new ApiError(404, "Video not found");
   }
 
-  // 5. Return video
-  return res
-    .status(200)
-    .json(new ApiResponse(200, video, "Video fetched successfully"));
+  const likesCount = await Like.countDocuments({
+    video: videoId,
+  });
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        ...video.toObject(),
+        likesCount,
+      },
+      "Video fetched successfully",
+    ),
+  );
 });
 
 const updateVideo = asyncHandler(async (req, res) => {

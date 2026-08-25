@@ -133,10 +133,58 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
     likedBy: req.user._id,
   });
 
-  // 7. Return response
+  // 7. Check video Like
+
+  const checkVideoLike = asyncHandler(async (req, res) => {
+    const { videoId } = req.params;
+
+    if (!mongoose.isValidObjectId(videoId)) {
+      throw new ApiError(400, "Invalid video ID");
+    }
+
+    const existingLike = await Like.findOne({
+      video: videoId,
+      likedBy: req.user._id,
+    });
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          liked: !!existingLike,
+        },
+        "Video like status fetched successfully",
+      ),
+    );
+  });
+
+  // 8. Return response
   return res
     .status(201)
     .json(new ApiResponse(201, { liked: true }, "Tweet liked successfully"));
+});
+
+const checkVideoLike = asyncHandler(async (req, res) => {
+  const { videoId } = req.params;
+
+  if (!mongoose.isValidObjectId(videoId)) {
+    throw new ApiError(400, "Invalid video ID");
+  }
+
+  const existingLike = await Like.findOne({
+    video: videoId,
+    likedBy: req.user._id,
+  });
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        liked: !!existingLike,
+      },
+      "Video like status fetched successfully",
+    ),
+  );
 });
 
 const getLikedVideos = asyncHandler(async (req, res) => {
@@ -185,4 +233,10 @@ const getLikedVideos = asyncHandler(async (req, res) => {
     );
 });
 
-export { toggleCommentLike, toggleTweetLike, toggleVideoLike, getLikedVideos };
+export {
+  toggleCommentLike,
+  toggleTweetLike,
+  toggleVideoLike,
+  getLikedVideos,
+  checkVideoLike,
+};
