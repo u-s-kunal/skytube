@@ -1,5 +1,5 @@
 import { Router } from "express";
-
+import { optionalJWT } from "../middleware/optionalAuth.middleware.js";
 import {
   addComment,
   deleteComment,
@@ -12,7 +12,7 @@ import { verifyJWT } from "../middleware/auth.middleware.js";
 const router = Router();
 
 // Public: anyone can read comments
-router.route("/:videoId").get(getVideoComments);
+router.route("/:videoId").get(optionalJWT, getVideoComments);
 
 // Protected: login required
 router.route("/:videoId").post(verifyJWT, addComment);

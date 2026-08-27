@@ -54,3 +54,23 @@ export const checkVideoLike = async (videoId, accessToken) => {
 
   return data;
 };
+
+//COMMENT LIKES SECTION :
+
+export const toggleCommentLike = async (commentId, accessToken) => {
+  const response = await fetch(`${API_URL}/likes/toggle/c/${commentId}`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to toggle comment like");
+  }
+
+  return data;
+};

@@ -98,26 +98,23 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
 });
 
 const toggleTweetLike = asyncHandler(async (req, res) => {
-  // 1. Get tweet ID from URL
   const { tweetId } = req.params;
-  // 2. Validate tweet ID
+
   if (!mongoose.isValidObjectId(tweetId)) {
     throw new ApiError(400, "Invalid tweet ID");
   }
 
-  // 3. Check if tweet exists
   const tweet = await Tweet.findById(tweetId);
 
   if (!tweet) {
     throw new ApiError(404, "Tweet not found");
   }
-  // 4. Check if user already liked the tweet
+
   const existingLike = await Like.findOne({
     tweet: tweetId,
     likedBy: req.user._id,
   });
 
-  // 5. If already liked, remove the like
   if (existingLike) {
     await existingLike.deleteOne();
 
@@ -127,38 +124,12 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
         new ApiResponse(200, { liked: false }, "Tweet unliked successfully"),
       );
   }
-  // 6. If not liked, create a like
+
   await Like.create({
     tweet: tweetId,
     likedBy: req.user._id,
   });
 
-  // 7. Check video Like
-
-  const checkVideoLike = asyncHandler(async (req, res) => {
-    const { videoId } = req.params;
-
-    if (!mongoose.isValidObjectId(videoId)) {
-      throw new ApiError(400, "Invalid video ID");
-    }
-
-    const existingLike = await Like.findOne({
-      video: videoId,
-      likedBy: req.user._id,
-    });
-
-    return res.status(200).json(
-      new ApiResponse(
-        200,
-        {
-          liked: !!existingLike,
-        },
-        "Video like status fetched successfully",
-      ),
-    );
-  });
-
-  // 8. Return response
   return res
     .status(201)
     .json(new ApiResponse(201, { liked: true }, "Tweet liked successfully"));

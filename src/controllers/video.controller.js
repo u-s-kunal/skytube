@@ -182,6 +182,8 @@ const publishAVideo = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, video, "Video published successfully"));
 });
 
+//GETTING VIDEO LOGIC
+
 const getVideoById = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
 
@@ -189,10 +191,18 @@ const getVideoById = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid video ID");
   }
 
-  const video = await Video.findById(videoId).populate(
-    "owner",
-    "userName fullName avatar",
-  );
+  // Increment view count
+  const video = await Video.findByIdAndUpdate(
+    videoId,
+    {
+      $inc: {
+        views: 1,
+      },
+    },
+    {
+      returnDocument: "after",
+    },
+  ).populate("owner", "userName fullName avatar");
 
   if (!video) {
     throw new ApiError(404, "Video not found");

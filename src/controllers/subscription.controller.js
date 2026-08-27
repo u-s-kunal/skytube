@@ -96,26 +96,24 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
 
 // controller to return channel list to which user has subscribed
 const getSubscribedChannels = asyncHandler(async (req, res) => {
-  // 1. Get subscriber ID from URL
   const { subscriberId } = req.params;
-  // 2. Validate subscriber ID
+
   if (!mongoose.isValidObjectId(subscriberId)) {
     throw new ApiError(400, "Invalid subscriber ID");
-
-    // 3. Check if user exists
-    const user = await User.findById(subscriberId);
   }
+
+  const user = await User.findById(subscriberId);
+
   if (!user) {
     throw new ApiError(404, "User not found");
   }
-  // 4. Get channels subscribed to by the user
+
   const subscriptions = await Subscription.find({
     subscriber: subscriberId,
   })
     .populate("channel", "userName fullName avatar coverImage")
     .sort({ createdAt: -1 });
 
-  // 5. Return subscribed channels
   return res
     .status(200)
     .json(
@@ -127,4 +125,75 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
     );
 });
 
-export { toggleSubscription, getUserChannelSubscribers, getSubscribedChannels };
+// Check whether the logged-in user subscribed to a channel
+const checkSubscription = asyncHandler(async (req, res) => {
+  const { channelId } = req.params;
+
+  // Validate channel ID
+  if (!mongoose.isValidObjectId(channelId)) {
+    throw new ApiError(400, "Invalid channel ID");
+  }
+
+  // Check if channel exists
+  const channel = await User.findById(channelId);
+
+  if (!channel) {
+    throw new ApiError(404, "Channel not found");
+  }
+
+  // Check subscription
+  const existingSubscription = await Subscription.findOne({
+    subscriber: req.user._id,
+    channel: channelId,
+  });
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        subscribed: !!existingSubscription,
+      },
+      "Subscription status fetched successfully",
+    ),
+  );
+});
+
+// Get subscriber count of a channel
+const getSubscriberCount = asyncHandler(async (req, res) => {
+  const { channelId } = req.params;
+
+  // Validate channel ID
+  if (!mongoose.isValidObjectId(channelId)) {
+    throw new ApiError(400, "Invalid channel ID");
+  }
+
+  // Check if channel exists
+  const channel = await User.findById(channelId);
+
+  if (!channel) {
+    throw new ApiError(404, "Channel not found");
+  }
+
+  // Count subscribers
+  const subscribersCount = await Subscription.countDocuments({
+    channel: channelId,
+  });
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        subscribersCount,
+      },
+      "Subscriber count fetched successfully",
+    ),
+  );
+});
+
+export {
+  toggleSubscription,
+  getUserChannelSubscribers,
+  getSubscribedChannels,
+  checkSubscription,
+  getSubscriberCount,
+};

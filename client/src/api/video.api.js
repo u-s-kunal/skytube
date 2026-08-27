@@ -25,3 +25,22 @@ export const getVideoById = async (videoId) => {
 
   return response.json();
 };
+
+export const publishVideo = async (formData, accessToken) => {
+  const response = await fetch(`${API_URL}/videos`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: formData,
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to upload video");
+  }
+
+  return data;
+};

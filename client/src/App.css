@@ -1,6 +1,190 @@
+@import "tailwindcss";
+
+/* =========================================================
+   SKYTUBE DESIGN SYSTEM
+========================================================= */
+
+:root {
+  /* Backgrounds */
+  --background: #f7f7fa;
+  --surface: #ffffff;
+  --surface-hover: #f1f1f5;
+
+  /* Text */
+  --text-primary: #17171a;
+  --text-secondary: #6b6b73;
+  --text-muted: #9a9aa3;
+
+  /* Borders */
+  --border: #e5e5ea;
+  --border-hover: #d4d4dc;
+
+  /* Accent */
+  --accent: #6366f1;
+  --accent-hover: #4f46e5;
+  --accent-soft: #eef2ff;
+
+  /* Status */
+  --danger: #ef4444;
+  --success: #22c55e;
+
+  /* Layout */
+  --navbar-height: 4rem;
+}
+
+/* =========================================================
+   DARK THEME
+========================================================= */
+
+html.dark {
+  /* Backgrounds */
+  --background: #0d0d10;
+  --surface: #16161b;
+  --surface-hover: #202027;
+
+  /* Text */
+  --text-primary: #f5f5f7;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+
+  /* Borders */
+  --border: #292930;
+  --border-hover: #3a3a44;
+
+  /* Accent */
+  --accent: #818cf8;
+  --accent-hover: #a5b4fc;
+  --accent-soft: #1e1b4b;
+
+  /* Status */
+  --danger: #f87171;
+  --success: #4ade80;
+}
+
+/* =========================================================
+   BASE
+========================================================= */
+
+html {
+  background: var(--background);
+  color: var(--text-primary);
+
+  color-scheme: light;
+
+  transition:
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+
+  background: var(--background);
+  color: var(--text-primary);
+
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  transition:
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+/* =========================================================
+   FORM ELEMENTS
+========================================================= */
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+/* =========================================================
+   IMAGES
+========================================================= */
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* =========================================================
+   TEXT SELECTION
+========================================================= */
+
+::selection {
+  background: var(--accent);
+  color: white;
+}
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-hover);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* =========================================================
+   VIDEO CARD
+========================================================= */
+
+.video-card {
+  width: 100%;
+  overflow: hidden;
+  cursor: pointer;
+
+  color: var(--text-primary);
+}
+
+.video-card__thumbnail {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+
+  overflow: hidden;
+
+  background: var(--surface);
+
+  border-radius: 12px;
+}
+
+.video-card__thumbnail img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
 .video-card__thumbnail video {
   width: 100%;
   height: 100%;
+
   object-fit: cover;
 }
 
@@ -10,106 +194,201 @@
 
 .video-card__title {
   margin: 0 0 6px;
+
   font-size: 18px;
+  font-weight: 600;
+
+  color: var(--text-primary);
 }
 
 .video-card__description {
   margin: 0 0 6px;
-  color: #666;
+
   font-size: 14px;
+
+  color: var(--text-secondary);
 }
 
 .video-card__views {
   margin: 0;
-  color: #777;
+
   font-size: 13px;
+
+  color: var(--text-muted);
 }
+
+/* =========================================================
+   VIDEO GRID
+========================================================= */
 
 .video-grid {
   display: grid;
+
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+
   gap: 24px;
+
   padding: 20px;
 }
 
-.video-card {
-  width: 320px;
-  overflow: hidden;
-  cursor: pointer;
-}
+/* =========================================================
+   WATCH PAGE
+========================================================= */
 
-.video-card__thumbnail {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border-radius: 10px;
-}
-
-.video-card__thumbnail img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* WATCH PAGE CSS */
 .watch-page {
+  width: 100%;
   max-width: 1000px;
+
   margin: 0 auto;
+
   padding: 24px;
+
+  color: var(--text-primary);
 }
 
 .watch-player {
   width: 100%;
   max-height: 600px;
-  background: black;
-  border-radius: 10px;
+
+  background: #000;
+
+  border-radius: 14px;
+
+  overflow: hidden;
 }
 
-/* NAVBAR CSS */
+/* =========================================================
+   NAVBAR
+========================================================= */
 
 .navbar {
-  height: 64px;
+  height: var(--navbar-height);
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   padding: 0 24px;
-  border-bottom: 1px solid #ddd;
+
+  background: var(--surface);
+
+  border-bottom: 1px solid var(--border);
+
+  color: var(--text-primary);
+
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease;
 }
 
 .navbar__logo {
   font-size: 24px;
   font-weight: 700;
+
   text-decoration: none;
-  color: #343333;
+
+  color: var(--text-primary);
+
+  transition: color 150ms ease;
 }
 
-.navbar__search {
-  display: flex;
-  width: 40%;
+.navbar__logo:hover {
+  color: var(--accent);
 }
 
-.navbar__search input {
-  flex: 1;
-  padding: 10px 14px;
-  border: 1px solid #ccc;
-  border-radius: 6px 0 0 6px;
-  outline: none;
-}
-
-.navbar__search button {
-  padding: 10px 16px;
-  border: 1px solid #ccc;
-  border-left: none;
-  border-radius: 0 6px 6px 0;
-  cursor: pointer;
-}
+/* =========================================================
+   NAVBAR ACTIONS
+========================================================= */
 
 .navbar__actions {
   display: flex;
-  gap: 16px;
+  align-items: center;
+
+  gap: 12px;
 }
 
 .navbar__actions a {
   text-decoration: none;
-  color: #000;
+
+  color: var(--text-primary);
+
+  transition: color 150ms ease;
+}
+
+.navbar__actions a:hover {
+  color: var(--accent);
+}
+
+/* =========================================================
+   RESPONSIVE — TABLET
+========================================================= */
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 16px;
+  }
+
+  .navbar__logo {
+    font-size: 20px;
+  }
+
+  .navbar__search {
+    flex: 1;
+
+    width: auto;
+
+    margin: 0 16px;
+  }
+
+  .video-grid {
+    grid-template-columns: 1fr;
+
+    gap: 18px;
+
+    padding: 16px;
+  }
+
+  .watch-page {
+    padding: 16px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE — MOBILE
+========================================================= */
+
+@media (max-width: 540px) {
+  .navbar {
+    gap: 8px;
+  }
+
+  .navbar__logo {
+    font-size: 18px;
+  }
+
+  .navbar__search {
+    margin: 0 8px;
+  }
+
+  .navbar__search button {
+    padding: 10px 12px;
+  }
+
+  .navbar__actions {
+    gap: 6px;
+  }
+
+  .video-grid {
+    gap: 16px;
+
+    padding: 12px;
+  }
+
+  .watch-page {
+    padding: 12px;
+  }
+
+  .watch-player {
+    border-radius: 10px;
+  }
 }

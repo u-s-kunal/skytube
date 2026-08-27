@@ -1,9 +1,15 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
 // Get comments for a video
-export const getVideoComments = async (videoId) => {
+export const getVideoComments = async (videoId, accessToken) => {
   const response = await fetch(`${API_URL}/comments/${videoId}`, {
     method: "GET",
+    credentials: "include",
+    headers: accessToken
+      ? {
+          Authorization: `Bearer ${accessToken}`,
+        }
+      : {},
   });
 
   const data = await response.json();

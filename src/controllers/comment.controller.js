@@ -3,26 +3,22 @@ import { Comment } from "../models/comment.model.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import { Like } from "../models/like.model.js";
 
 /////////GET COMMENT LOGIC FROM HERE ///////
 
 const getVideoComments = asyncHandler(async (req, res) => {
-  // 1. Get video ID from URL
   const { videoId } = req.params;
 
-  // 2. Get pagination values
   const { page = 1, limit = 10 } = req.query;
 
-  // 3. Validate video ID
   if (!mongoose.isValidObjectId(videoId)) {
     throw new ApiError(400, "Invalid video ID");
   }
 
-  // 4. Convert pagination values to numbers
   const pageNumber = Number(page);
   const limitNumber = Number(limit);
 
-  // 5. Validate pagination values
   if (
     !Number.isInteger(pageNumber) ||
     !Number.isInteger(limitNumber) ||
@@ -32,32 +28,83 @@ const getVideoComments = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Page and limit must be positive integers");
   }
 
-  // 6. Prevent excessively large requests
   if (limitNumber > 100) {
     throw new ApiError(400, "Limit cannot exceed 100");
   }
 
-  // 7. Calculate documents to skip
   const skip = (pageNumber - 1) * limitNumber;
 
-  // 8. Get comments
+  // Get comments
   const comments = await Comment.find({
     video: videoId,
   })
     .populate("owner", "userName fullName avatar")
     .sort({ createdAt: -1 })
     .skip(skip)
-    .limit(limitNumber);
+    .limit(limitNumber)
+    .lean();
 
-  // 9. Get total number of comments
+  const commentIds = comments.map((comment) => comment._id);
+
+  // Get like counts
+  let likeCounts = [];
+
+  if (commentIds.length > 0) {
+    likeCounts = await Like.aggregate([
+      {
+        $match: {
+          comment: {
+            $in: commentIds,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: "$comment",
+          count: {
+            $sum: 1,
+          },
+        },
+      },
+    ]);
+  }
+
+  const likeCountMap = new Map(
+    likeCounts.map((item) => [item._id.toString(), item.count]),
+  );
+
+  // Get comments liked by current user
+  let likedCommentIds = new Set();
+
+  if (req.user && commentIds.length > 0) {
+    const likedComments = await Like.find({
+      comment: {
+        $in: commentIds,
+      },
+      likedBy: req.user._id,
+    }).select("comment");
+
+    likedCommentIds = new Set(
+      likedComments.map((like) => like.comment.toString()),
+    );
+  }
+
+  // Add like information to comments
+  comments.forEach((comment) => {
+    const commentId = comment._id.toString();
+
+    comment.likesCount = likeCountMap.get(commentId) || 0;
+
+    comment.isLiked = likedCommentIds.has(commentId);
+  });
+
+  // Get total comments
   const totalComments = await Comment.countDocuments({
     video: videoId,
   });
 
-  // 10. Calculate total pages
   const totalPages = Math.ceil(totalComments / limitNumber);
 
-  // 11. Send response
   return res.status(200).json(
     new ApiResponse(
       200,

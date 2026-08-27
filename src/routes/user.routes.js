@@ -10,6 +10,8 @@ import {
   updateAccountDetails,
   updateAvatar,
   updateCoverImage,
+  removeAvatar,
+  removeCoverImage,
   getUserChannelProfile,
   getWatchHistory,
 } from "../controllers/user.controller.js";
@@ -46,5 +48,7 @@ router
 router
   .route("/update-cover-image")
   .patch(verifyJWT, upload.single("coverImage"), updateCoverImage);
+router.route("/remove-avatar").patch(verifyJWT, removeAvatar);
 
+router.route("/remove-cover-image").patch(verifyJWT, removeCoverImage);
 export default router;
