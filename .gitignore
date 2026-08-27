@@ -80,6 +80,8 @@ web_modules/
 .cache
 .parcel-cache
 
+.DS_Store
+
 # Next.js build output
 .next
 out
