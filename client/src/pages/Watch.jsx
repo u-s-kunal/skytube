@@ -466,7 +466,7 @@ function Watch() {
               disabled={likeLoading}
               className={`group flex items-center gap-2 rounded-2xl border px-4 py-2.5 text-sm font-semibold transition duration-200 ${
                 isLiked
-                  ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
+                  ? "border-[var(--accent)] bg-[var(--accent-soft)] text-red-500"
                   : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:border-[var(--border-hover)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]"
               } disabled:cursor-not-allowed disabled:opacity-60`}
             >

@@ -626,7 +626,7 @@ function Comments({ videoId }) {
                           }
                           className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition ${
                             isCommentLiked
-                              ? "bg-[var(--accent-soft)] text-[var(--accent)]"
+                              ? "bg-[var(--accent-soft)] text-red-500"
                               : "text-[var(--text-muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]"
                           }`}
                         >

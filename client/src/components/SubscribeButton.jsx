@@ -185,7 +185,7 @@ function SubscribeButton({ channelId }) {
         disabled={actionLoading}
         className={`group flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-200 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 ${
           subscribed
-            ? "border border-[var(--border)] bg-[var(--surface)] text-[var(--text-primary)] hover:bg-[var(--surface-hover)]"
+            ? "border border-[var(--border)] bg-red-500 text-[var(--text-primary)] hover:bg-[var(--surface-hover)]"
             : "bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)]"
         }`}
       >
