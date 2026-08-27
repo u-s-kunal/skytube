@@ -70,6 +70,9 @@ function Channel() {
   const [videosError, setVideosError] =
     useState("");
 
+  const [showUploadVideo, setShowUploadVideo] =
+    useState(false);
+
   // =====================================================
   // TWEETS
   // =====================================================
@@ -282,6 +285,8 @@ function Channel() {
   // =====================================================
 
   const handleVideoUploaded = () => {
+    setShowUploadVideo(false);
+
     setVideoRefresh(
       (prev) => prev + 1,
     );
@@ -627,6 +632,7 @@ function Channel() {
         <div className="h-44 animate-pulse rounded-b-3xl bg-[var(--surface-hover)] sm:h-64" />
 
         <section className="px-1 py-6 sm:px-2">
+
           <div className="flex items-center gap-4">
 
             <div className="h-20 w-20 shrink-0 animate-pulse rounded-full bg-[var(--surface-hover)] sm:h-24 sm:w-24" />
@@ -638,6 +644,7 @@ function Channel() {
             </div>
 
           </div>
+
         </section>
 
       </main>
@@ -651,11 +658,15 @@ function Channel() {
   if (error) {
     return (
       <main className="flex min-h-[60vh] items-center justify-center px-4">
+
         <div className="rounded-2xl border border-[var(--danger)]/20 bg-[var(--danger)]/10 px-6 py-4 text-center">
+
           <p className="text-sm text-[var(--danger)]">
             {error}
           </p>
+
         </div>
+
       </main>
     );
   }
@@ -667,9 +678,11 @@ function Channel() {
   if (!channel) {
     return (
       <main className="flex min-h-[60vh] items-center justify-center px-4">
+
         <p className="text-sm text-[var(--text-secondary)]">
           Channel not found.
         </p>
+
       </main>
     );
   }
@@ -685,7 +698,7 @@ function Channel() {
           COVER IMAGE
       ================================================= */}
 
-      <div className="relative h-44 overflow-hidden rounded-b-3xl bg-[var(--surface-hover)] sm:h-64 sm:rounded-b-3xl">
+      <div className="relative h-44 overflow-hidden rounded-b-3xl bg-[var(--surface-hover)] sm:h-64">
 
         {channel.coverImage ? (
           <img
@@ -702,9 +715,10 @@ function Channel() {
         {/* Cover actions */}
 
         {isOwnChannel && (
-          <div className="absolute bottom-3 right-3 flex flex-wrap justify-end gap-2 sm:bottom-4 sm:right-4">
+          <div className="absolute bottom-3 right-3 flex max-w-[calc(100%-1.5rem)] flex-wrap justify-end gap-2 sm:bottom-4 sm:right-4">
 
             <label className="flex cursor-pointer items-center gap-1.5 rounded-full bg-black/70 px-3 py-2 text-xs font-medium text-white backdrop-blur transition hover:bg-black sm:px-4 sm:text-sm">
+
               <Camera size={15} />
 
               <span>
@@ -724,6 +738,7 @@ function Channel() {
                   uploadingCover
                 }
               />
+
             </label>
 
             {channel.coverImage && (
@@ -737,6 +752,7 @@ function Channel() {
                 }
                 className="flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-2 text-xs font-medium text-[var(--danger)] backdrop-blur transition hover:bg-white disabled:opacity-50 sm:px-4 sm:text-sm"
               >
+
                 <Trash2 size={14} />
 
                 <span>
@@ -744,6 +760,7 @@ function Channel() {
                     ? "Removing..."
                     : "Remove"}
                 </span>
+
               </button>
             )}
 
@@ -817,16 +834,14 @@ function Channel() {
 
               <span>
                 <strong className="text-[var(--text-primary)]">
-                  {channel.subscribersCount ??
-                    0}
+                  {channel.subscribersCount ?? 0}
                 </strong>{" "}
                 subscribers
               </span>
 
               <span>
                 <strong className="text-[var(--text-primary)]">
-                  {channel.channelsSubscribedToCount ??
-                    0}
+                  {channel.channelsSubscribedToCount ?? 0}
                 </strong>{" "}
                 subscriptions
               </span>
@@ -848,8 +863,11 @@ function Channel() {
                   }
                   className="flex flex-1 items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--accent-hover)] sm:flex-none"
                 >
+
                   <Pencil size={15} />
+
                   Edit profile
+
                 </button>
 
                 {channel.avatar && (
@@ -863,6 +881,7 @@ function Channel() {
                     }
                     className="flex items-center justify-center gap-2 rounded-full border border-[var(--border)] px-4 py-2.5 text-sm font-medium text-[var(--danger)] transition hover:bg-[var(--danger)]/10 disabled:opacity-50"
                   >
+
                     <Trash2 size={15} />
 
                     <span className="hidden sm:inline">
@@ -870,8 +889,10 @@ function Channel() {
                         ? "Removing..."
                         : "Remove avatar"}
                     </span>
+
                   </button>
                 )}
+
               </>
             ) : (
               <div className="w-full sm:w-auto">
@@ -1059,12 +1080,15 @@ function Channel() {
                 : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             }`}
           >
+
             <Video size={17} />
+
             Videos
 
             <span className="rounded-full bg-[var(--surface-hover)] px-2 py-0.5 text-xs">
               {videos.length}
             </span>
+
           </button>
 
           <button
@@ -1078,12 +1102,15 @@ function Channel() {
                 : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             }`}
           >
+
             <MessageSquare size={17} />
+
             Tweets
 
             <span className="rounded-full bg-[var(--surface-hover)] px-2 py-0.5 text-xs">
               {tweets.length}
             </span>
+
           </button>
 
         </div>
@@ -1095,42 +1122,109 @@ function Channel() {
         {activeTab === "videos" && (
           <div className="py-6">
 
+            {/* Videos heading + upload button */}
+
+            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+
+              <div>
+                <h2 className="text-lg font-semibold text-[var(--text-primary)]">
+                  Videos
+                </h2>
+
+                <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                  {videos.length}{" "}
+                  {videos.length === 1
+                    ? "video"
+                    : "videos"}
+                </p>
+              </div>
+
+              {isOwnChannel &&
+                !videosLoading &&
+                !videosError &&
+                videos.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setShowUploadVideo(
+                        (prev) => !prev,
+                      )
+                    }
+                    className="flex w-full items-center justify-center gap-2 rounded-full bg-red-400 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--accent-hover)] sm:w-auto"
+                  >
+
+                    {showUploadVideo ? (
+                      <X size={17} />
+                    ) : (
+                      <Video size={17} />
+                    )}
+
+                    {showUploadVideo
+                      ? "Cancel upload"
+                      : "Upload New video"}
+
+                  </button>
+                )}
+
+            </div>
+
+            {/* Loading */}
+
             {videosLoading && (
               <div className="flex justify-center py-16">
+
                 <p className="text-sm text-[var(--text-secondary)]">
                   Loading videos...
                 </p>
+
               </div>
             )}
+
+            {/* Error */}
 
             {!videosLoading &&
               videosError && (
                 <div className="rounded-2xl border border-[var(--danger)]/20 bg-[var(--danger)]/10 px-4 py-8 text-center">
+
                   <p className="text-sm text-[var(--danger)]">
                     {videosError}
                   </p>
+
                 </div>
               )}
 
+            {/* =================================================
+                UPLOAD VIDEO
+            ================================================= */}
+
             {!videosLoading &&
               !videosError &&
-              videos.length === 0 &&
-              isOwnChannel && (
-                <UploadVideo
-                  accessToken={
-                    accessToken
-                  }
-                  onUploadSuccess={
-                    handleVideoUploaded
-                  }
-                />
+              isOwnChannel &&
+              (videos.length === 0 ||
+                showUploadVideo) && (
+                <div className="mb-6 w-full">
+
+                  <UploadVideo
+                    accessToken={
+                      accessToken
+                    }
+                    onUploadSuccess={
+                      handleVideoUploaded
+                    }
+                  />
+
+                </div>
               )}
+
+            {/* =================================================
+                EMPTY STATE — OTHER CHANNEL
+            ================================================= */}
 
             {!videosLoading &&
               !videosError &&
               videos.length === 0 &&
               !isOwnChannel && (
-                <div className="rounded-3xl border border-dashed border-[var(--border)] bg-[var(--surface)] px-6 py-16 text-center">
+                <div className="rounded-3xl border border-dashed border-[var(--border)] bg-[var(--surface)] px-5 py-14 text-center sm:px-6 sm:py-16">
 
                   <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--accent-soft)] text-[var(--accent)]">
                     <Video size={26} />
@@ -1140,19 +1234,27 @@ function Channel() {
                     No videos yet
                   </h2>
 
-                  <p className="mt-2 text-sm text-[var(--text-secondary)]">
+                  <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-[var(--text-secondary)]">
                     This channel hasn't uploaded any videos yet.
                   </p>
 
                 </div>
               )}
 
+            {/* =================================================
+                VIDEO GRID
+            ================================================= */}
+
             {!videosLoading &&
               !videosError &&
               videos.length > 0 && (
-                <VideoGrid
-                  videos={videos}
-                />
+                <div className="min-w-0">
+
+                  <VideoGrid
+                    videos={videos}
+                  />
+
+                </div>
               )}
 
           </div>
@@ -1167,6 +1269,8 @@ function Channel() {
 
             <div className="mx-auto w-full max-w-3xl">
 
+              {/* Tweets loading */}
+
               {tweetsLoading && (
                 <div className="space-y-4">
 
@@ -1177,24 +1281,32 @@ function Channel() {
                 </div>
               )}
 
+              {/* Tweets error */}
+
               {!tweetsLoading &&
                 tweetsError && (
                   <div className="rounded-2xl border border-[var(--danger)]/20 bg-[var(--danger)]/10 px-4 py-8 text-center">
+
                     <p className="text-sm text-[var(--danger)]">
                       {tweetsError}
                     </p>
+
                   </div>
                 )}
+
+              {/* No tweets */}
 
               {!tweetsLoading &&
                 !tweetsError &&
                 tweets.length === 0 && (
-                  <div className="rounded-3xl border border-dashed border-[var(--border)] bg-[var(--surface)] px-6 py-16 text-center">
+                  <div className="rounded-3xl border border-dashed border-[var(--border)] bg-[var(--surface)] px-5 py-14 text-center sm:px-6 sm:py-16">
 
                     <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--accent-soft)] text-[var(--accent)]">
+
                       <MessageSquare
                         size={26}
                       />
+
                     </div>
 
                     <h2 className="mt-5 font-semibold text-[var(--text-primary)]">
@@ -1210,10 +1322,13 @@ function Channel() {
                   </div>
                 )}
 
+              {/* Tweets */}
+
               {!tweetsLoading &&
                 !tweetsError &&
                 tweets.length > 0 && (
                   <div className="space-y-4">
+
                     {tweets.map(
                       (tweet) => (
                         <TweetCard
@@ -1236,6 +1351,7 @@ function Channel() {
                         />
                       ),
                     )}
+
                   </div>
                 )}
 
