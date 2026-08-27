@@ -688,8 +688,17 @@ function Channel() {
   }
 
   // =====================================================
-  // RENDER
+  // SUBSCRIBTION CHNAGE
   // =====================================================
+
+  const handleSubscriptionChange = (
+  newCount,
+) => {
+  setChannel((prev) => ({
+    ...prev,
+    subscribersCount: newCount,
+  }));
+};
 
   return (
     <main className="mx-auto w-full max-w-6xl">
@@ -897,8 +906,9 @@ function Channel() {
             ) : (
               <div className="w-full sm:w-auto">
                 <SubscribeButton
-                  channelId={
-                    channel._id
+                  channelId={channel._id}
+                  onSubscriptionChange={
+                    handleSubscriptionChange
                   }
                 />
               </div>

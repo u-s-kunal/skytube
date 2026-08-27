@@ -1,18 +1,24 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import {
   Bell,
   Check,
   UserPlus,
 } from "lucide-react";
+
 import {
   toggleSubscription,
   checkSubscription,
   getSubscriberCount,
 } from "../api/subscription.api.js";
+
 import { useAuth } from "../hooks/useAuth.js";
 
-function SubscribeButton({ channelId }) {
+function SubscribeButton({
+  channelId,
+  onSubscriptionChange,
+}) {
   const navigate = useNavigate();
 
   const {
@@ -32,9 +38,9 @@ function SubscribeButton({ channelId }) {
   const [actionLoading, setActionLoading] =
     useState(false);
 
-  // =========================================================
+  // =====================================================
   // FETCH SUBSCRIPTION DATA
-  // =========================================================
+  // =====================================================
 
   useEffect(() => {
     const fetchSubscriptionData = async () => {
@@ -43,56 +49,45 @@ function SubscribeButton({ channelId }) {
         return;
       }
 
-      // Logged-out users can still see subscriber count
-      if (!isAuthenticated || !accessToken) {
-        try {
-          const response =
-            await getSubscriberCount(
-              channelId,
-            );
-
-          setSubscribersCount(
-            response.data
-              ?.subscribersCount ?? 0,
-          );
-        } catch (error) {
-          console.error(
-            "Failed to get subscriber count:",
-            error,
-          );
-        } finally {
-          setLoading(false);
-        }
-
-        return;
-      }
-
       try {
         setLoading(true);
 
-        const [
-          statusResponse,
-          countResponse,
-        ] = await Promise.all([
-          checkSubscription(
-            channelId,
-            accessToken,
-          ),
+        // -------------------------------------------------
+        // Subscriber count is public
+        // -------------------------------------------------
 
-          getSubscriberCount(
+        const countResponse =
+          await getSubscriberCount(
+            channelId,
+          );
+
+        const count =
+          countResponse.data
+            ?.subscribersCount ?? 0;
+
+        setSubscribersCount(count);
+
+        // -------------------------------------------------
+        // Subscription status requires authentication
+        // -------------------------------------------------
+
+        if (
+          !isAuthenticated ||
+          !accessToken
+        ) {
+          setSubscribed(false);
+          return;
+        }
+
+        const statusResponse =
+          await checkSubscription(
             channelId,
             accessToken,
-          ),
-        ]);
+          );
 
         setSubscribed(
           statusResponse.data
             ?.subscribed ?? false,
-        );
-
-        setSubscribersCount(
-          countResponse.data
-            ?.subscribersCount ?? 0,
         );
       } catch (error) {
         console.error(
@@ -111,18 +106,23 @@ function SubscribeButton({ channelId }) {
     isAuthenticated,
   ]);
 
-  // =========================================================
+  // =====================================================
   // TOGGLE SUBSCRIPTION
-  // =========================================================
+  // =====================================================
 
   const handleSubscribe = async () => {
     if (!isAuthenticated) {
       navigate("/login", {
         state: {
-          from: window.location.pathname,
+          from:
+            window.location.pathname,
         },
       });
 
+      return;
+    }
+
+    if (actionLoading) {
       return;
     }
 
@@ -139,13 +139,41 @@ function SubscribeButton({ channelId }) {
         response.data?.subscribed ??
         false;
 
-      setSubscribed(isNowSubscribed);
-
-      setSubscribersCount((prev) =>
-        isNowSubscribed
-          ? prev + 1
-          : Math.max(prev - 1, 0),
+      setSubscribed(
+        isNowSubscribed,
       );
+
+      // -------------------------------------------------
+      // IMPORTANT:
+      // Never calculate count locally with +1 / -1.
+      // Get the real count from backend.
+      // -------------------------------------------------
+
+      const countResponse =
+        await getSubscriberCount(
+          channelId,
+          accessToken,
+        );
+
+      const actualCount =
+        countResponse.data
+          ?.subscribersCount ?? 0;
+
+      setSubscribersCount(
+        actualCount,
+      );
+
+      // -------------------------------------------------
+      // Tell Channel.jsx about the new count
+      // -------------------------------------------------
+
+      if (
+        onSubscriptionChange
+      ) {
+        onSubscriptionChange(
+          actualCount,
+        );
+      }
     } catch (error) {
       console.error(
         "Subscription failed:",
@@ -156,26 +184,28 @@ function SubscribeButton({ channelId }) {
     }
   };
 
-  // =========================================================
+  // =====================================================
   // LOADING
-  // =========================================================
+  // =====================================================
 
   if (loading) {
     return (
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
+
         <div className="h-10 w-32 animate-pulse rounded-full bg-[var(--surface-hover)]" />
 
         <div className="h-4 w-24 animate-pulse rounded bg-[var(--surface-hover)]" />
+
       </div>
     );
   }
 
-  // =========================================================
+  // =====================================================
   // UI
-  // =========================================================
+  // =====================================================
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto">
 
       {/* Subscribe button */}
 
@@ -183,12 +213,13 @@ function SubscribeButton({ channelId }) {
         type="button"
         onClick={handleSubscribe}
         disabled={actionLoading}
-        className={`group flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-200 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 ${
+        className={`group flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-200 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 ${
           subscribed
-            ? "border border-[var(--border)] bg-red-500 text-[var(--text-primary)] hover:bg-[var(--surface-hover)]"
+            ? "border border-[var(--border)] bg-[var(--surface)] text-[var(--text-primary)] hover:bg-[var(--surface-hover)]"
             : "bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)]"
         }`}
       >
+
         {actionLoading ? (
           <>
             <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -217,17 +248,19 @@ function SubscribeButton({ channelId }) {
             </span>
           </>
         )}
+
       </button>
 
       {/* Subscriber count */}
 
       <div className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)]">
+
         <Bell
           size={15}
-          className="text-[var(--text-muted)]"
+          className="shrink-0 text-[var(--text-muted)]"
         />
 
-        <span>
+        <span className="font-medium text-[var(--text-primary)]">
           {subscribersCount.toLocaleString()}
         </span>
 
@@ -236,7 +269,9 @@ function SubscribeButton({ channelId }) {
             ? "subscriber"
             : "subscribers"}
         </span>
+
       </div>
+
     </div>
   );
 }
