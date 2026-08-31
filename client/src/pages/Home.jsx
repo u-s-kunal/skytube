@@ -75,7 +75,7 @@ function Home() {
 
   if (error) {
     return (
-      <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4">
+      <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 ">
 
         <div className="w-full max-w-md rounded-3xl border border-[var(--danger)]/20 bg-[var(--surface)] p-6 text-center shadow-sm sm:p-8">
 
